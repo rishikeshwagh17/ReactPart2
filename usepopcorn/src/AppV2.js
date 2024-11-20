@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
-import { useMovies } from "./useMovies";
-import { useLocalStorageState } from "./useLocalStorageState";
 
 // const tempMovieData = [
 //   {
@@ -56,28 +54,18 @@ const average = (arr) =>
 const KEY = "5c87d770";
 
 export default function App() {
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedMovieId, setSelectedMovieId] = useState(null);
-  // const [watched, setWatched] = useState([]);
-  /* 
-    commenting this code as we are make one custom hook for localstorage functionality
-    const [watched, setWatched] = useState(() => {
-    const storedValue = localStorage.getItem("watched"); //retrive the data from locaStorage
-    return storedValue ? JSON.parse(storedValue) : [];
-   });
-  */
+  // useEffect(() => {
+  //   fetch(`https://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=interstellar`)
+  //     .then((res) => res.json())
+  //     .then((data) => setMovies(data.Search));
+  // }, []);
 
-  const [watched, setWatched] = useLocalStorageState([], "watched");
-  //custom hook usage
-  const { movies, isLoading, error } = useMovies(KEY, query);
-
-  /* commenting this as we have custom hook for movies (useMovies)
-   useEffect(() => {
-     fetch(`https://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=interstellar`)
-       .then((res) => res.json())
-       .then((data) => setMovies(data.Search));
-   }, []);
-*/
   function handleSelectedMovie(id) {
     setSelectedMovieId((selectedMovieId) =>
       selectedMovieId === id ? null : id
@@ -90,22 +78,45 @@ export default function App() {
 
   function handleAddWatch(movie) {
     setWatched((watched) => [...watched, movie]);
-    // localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
 
-  /* 
-    commenting this as we have custom hook for localstorage (useLocalStorage)
-    useEffect(
-     function () {
-       localStorage.setItem("watched", JSON.stringify(watched));
-    },
-     [watched]
-   );
-   */
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      async function getMoviesData() {
+        try {
+          setIsLoading(true);
+          setError("");
+          const res = await fetch(
+            `https://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=${query}`
+          );
+          if (!res.ok) {
+            throw new Error("something went wrong with fetching movies");
+          }
+          const data = await res.json();
+          if (data.Response === "False") throw new Error("Movies not found");
+          setMovies(data.Search);
+          setIsLoading(false);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+
+      if (query?.length >= 3) {
+        getMoviesData();
+      } else {
+        setMovies([]); // Clear movies if the query is too short
+        setError("");
+      }
+    }, 500); // 500ms debounce interval
+
+    return () => clearTimeout(timeoutId); // Clear timeout on query change
+  }, [query]);
 
   return (
     <>
@@ -160,23 +171,6 @@ function Navbar({ children }) {
 }
 
 function Search({ query, setQuery }) {
-  // useEffect(function () {
-  //   const el = document.querySelector(".search");   declarative way of selecting input field and focusing it and it is not great way solution use refs for dom nodes
-  //   console.log(el);
-  //   el.focus();
-  // }, []);
-  const inputRef = useRef(null);
-  useEffect(() => {
-    function callback(e) {
-      if (document.activeElement === inputRef.current) return;
-      if (e.code === "Enter") {
-        inputRef.current.focus();
-        setQuery("");
-      }
-    }
-    document.addEventListener("keydown", callback);
-    return () => document.addEventListener("keydown", callback);
-  }, [setQuery]);
   return (
     <input
       className="search"
@@ -184,7 +178,6 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setTimeout(setQuery(e.target.value), 300)}
-      ref={inputRef}
     />
   );
 }
@@ -255,11 +248,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatch, watched }) {
   const [movie, setMovie] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState("");
-
-  const countRef = useRef(0);
-  useEffect(() => {
-    if (userRating) countRef.current = countRef.current + 1;
-  }, [userRating]);
   const {
     Title: title,
     Year: year,
@@ -279,6 +267,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatch, watched }) {
   const watchedUserRating = watched.find(
     (movie) => movie.imdbID === selectedId
   )?.userRating;
+
   function handleAddWatchedMovie() {
     const newWatchedMovie = {
       imdbID: selectedId,
@@ -288,7 +277,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatch, watched }) {
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
       userRating,
-      countUserRating: countRef.current,
     };
     onAddWatch(newWatchedMovie);
     onCloseMovie();
