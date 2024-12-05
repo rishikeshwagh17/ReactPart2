@@ -37,7 +37,7 @@
       "id": 98443197
     },
     {
-      "cityName": "Berlin",
+      "cityName": "Munich",
       "country": "Germany",
       "emoji": "🇩🇪",
       "date": "2027-02-12T09:24:11.863Z",
@@ -49,9 +49,9 @@
       "id": 98443198
     },
     {
-      "cityName": "Berlin",
-      "country": "Germany",
-      "emoji": "🇩🇪",
+      "cityName": "Faro",
+      "country": "Portugal",
+      "emoji": "🇵🇹",
       "date": "2027-02-12T09:24:11.863Z",
       "notes": "Amazing 😃",
       "position": {
@@ -59,30 +59,6 @@
         "lng": 13.376933665713324
       },
       "id": 98443199
-    },
-    {
-      "cityName": "Berlin",
-      "country": "Germany",
-      "emoji": "🇩🇪",
-      "date": "2027-02-12T09:24:11.863Z",
-      "notes": "Amazing 😃",
-      "position": {
-        "lat": 52.53586782505711,
-        "lng": 13.376933665713324
-      },
-      "id": 98443200
-    },
-    {
-      "cityName": "Berlin",
-      "country": "Germany",
-      "emoji": "🇩🇪",
-      "date": "2027-02-12T09:24:11.863Z",
-      "notes": "Amazing 😃",
-      "position": {
-        "lat": 52.53586782505711,
-        "lng": 13.376933665713324
-      },
-      "id": 98443201
     }
   ]
 }
