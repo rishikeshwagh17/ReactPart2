@@ -9,7 +9,6 @@ function CityItem({ city }) {
       day: "numeric",
       month: "long",
       year: "numeric",
-      weekday: "long",
     }).format(new Date(date));
 
   const { cityName, emoji, date, id, position } = city;
