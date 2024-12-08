@@ -61,15 +61,27 @@
       }
     },
     {
-      "id": "a599",
+      "id": "5ded",
       "cityName": "Nashik",
       "country": "India",
       "emoji": "🇮🇳",
-      "date": "2024-09-01T13:37:42.000Z",
-      "notes": "my beautiful home",
+      "date": "2024-12-08T10:07:58.656Z",
+      "notes": "My Home town",
       "position": {
-        "lat": "19.91138351415555",
-        "lng": "73.82812500000001"
+        "lat": "19.983673966092503",
+        "lng": "73.77319335937501"
+      }
+    },
+    {
+      "id": "de4f",
+      "cityName": "Manchester",
+      "country": "United Kingdom of Great Britain and Northern Ireland (the)",
+      "emoji": "🇬🇧",
+      "date": "2024-12-08T10:13:37.156Z",
+      "notes": "Manchester United is my favorite club",
+      "position": {
+        "lat": "53.46516070239169",
+        "lng": "-2.2576904296875004"
       }
     }
   ]
