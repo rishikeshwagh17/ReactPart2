@@ -34,6 +34,11 @@ function Form() {
   const { createCity, isLoading } = useCities();
   const navigate = useNavigate();
 
+  /*
+  whenever user click on any location on map we need to get data about that location
+   so we need url for that which will
+  take lat and lng from url params and pass that to the url which will return data {city country and other}
+  */
   useEffect(() => {
     if (!lat && !lng) return;
     async function fetchCityData() {
@@ -58,6 +63,12 @@ function Form() {
     fetchCityData();
   }, [lat, lng]);
 
+  /*
+    created the handleSubmit function for form submission
+     where we have to add new city to our database using post method
+     we added the createCity function inside the context and there we write api logic
+     and after we add city we need to navigate back to the cities page so to view all cities we have
+  */
   async function handleSubmit(e) {
     e.preventDefault();
     if (!cityName || !date) return;
